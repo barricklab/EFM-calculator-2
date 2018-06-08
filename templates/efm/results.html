@@ -18,13 +18,13 @@
 
         <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 		<link href="{% static 'efm/styles.css' %}" rel="stylesheet" type="text/css" media="all" />
-		
+
 		<script>
 
-            // Let's generate our CSV...
+            // Let's generate our TSV...
             $(document).ready(function () {
 
-                function exportTableToCSV($table, filename) {
+                function exportTableToTSV($table, filename) {
 
                     var $rows = $table.find('tr'),
 
@@ -34,11 +34,11 @@
                         tmpRowDelim = String.fromCharCode(0), // null character
 
                         // actual delimiter characters for CSV format
-                        colDelim = ',',
+                        colDelim = '\t',
                         rowDelim = '\r\n',
 
                         // Grab text from table into CSV formatted string
-                        csv = 'Name, {{ title }}, RIP score, {{ rate|floatformat }},,\r\n'+$rows.map(function (i, row) {
+                        tsv = 'Name\t{{ title }}\tRIP score\t{{ rate|floatformat }}\t\t\r\n'+$rows.map(function (i, row) {
                             var $row = $(row),
                                 $cols = $row.find('td,th');
 
@@ -55,12 +55,12 @@
                             .split(tmpColDelim).join(colDelim),
 
                         // Data URI
-                        csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+                        tsvData = 'data:application/tsv;charset=utf-8,' + encodeURIComponent(tsv);
 
                     $(this)
                         .attr({
                         'download': filename,
-                            'href': csvData,
+                            'href': tsvData,
                             'target': '_blank'
                     });
                 }
@@ -68,7 +68,7 @@
                 // This must be a hyperlink
                 $(".export").on('click', function (event) {
                     // CSV
-                    exportTableToCSV.apply(this, [$('#mytable'), 'export.csv']);
+                    exportTableToTSV.apply(this, [$('#mytable'), 'export.tsv']);
 
                     // IF CSV, don't do event.preventDefault() or return false
                     // We actually need this to be a typical hyperlink
@@ -122,11 +122,11 @@
 					var ssr_lane = ssr_track.addLane();
 
                     {% for entry in repeats %}
-					
+
 					{% if entry.type == 'rmd' %}
 					var color = getRateColor({{ entry.raw_rate }});
 					lane = rmd_track.addLane();
-						
+
                     {% for pos in entry.location %}
                     var repeat = lane.addFeature( new BlockArrow('rmd', {{ pos }}, {{ entry.length.0 }}, '+'));
 					repeat.color = color;
@@ -134,7 +134,7 @@
 					repeat.borderColor = 'white';
 					repeat.borderWidth = 2;
                     {% endfor %}
-					
+
                     var line = lane.addFeature(new Line( 'rmd', {{ entry.location|first }}, ({{ entry.location|last }} - {{ entry.location|first }}) ));
                     line.color = color;
 
@@ -152,7 +152,7 @@
 
 					ssr.addDrawHook(function(feature){ return setMinGlyphSize(feature, 10); });
 					{% endif %}
-					
+
                     {% endfor %}
 
 					// Draw Chart
@@ -161,7 +161,7 @@
 
 			}
 
-			
+
 
 		</script>
       </head>
@@ -174,7 +174,7 @@
 			<p class="note">*(Lower is more stable.)</p>
             <div id="csv-button">
 				<div><a href="{% url 'efm:index' %}">&larr; New Sequence</a></div>
-				<div><a href="#" class="export">Download CSV</a></div>
+				<div><a href="#" class="export">Download TSV</a></div>
                 <div><a href="https://github.com/barricklab/efm-calculator/wiki" target="_blank">Help</a></div>
 			</div>
             {% if repeats != '' %}
@@ -198,7 +198,7 @@
                         <td>{{ entry.length.0 }}</td>
                         <td>{{ entry.sequence|default:'&mdash;' }}</td>
                         <td>{{ entry.count }}</td>
-                        <td>{% if entry.type = 'rmd' %}Repeat mediated deletion{% else %}Simple sequence repeat{% endif %}</td>
+                        <td>{% if entry.type == 'rmd' %}Repeat mediated deletion{% else %}Simple sequence repeat{% endif %}</td>
                         <td>{{ entry.raw_rate|stringformat:'.2E' }}</td>
                     </tr>
                     {% endfor %}
@@ -238,4 +238,3 @@
 	   </body>
 
     </html>
-
