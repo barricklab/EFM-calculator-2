@@ -3,7 +3,7 @@
 
 	   <head>
            {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
-              {% include "efm/ga.html" %}
+              {% include "efm2/ga.html" %}
            {% endif %}
        {% load staticfiles %}
         <meta charset="utf-8">
@@ -11,13 +11,13 @@
         <title>EFM Calculator</title>
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-        <script src="{% static 'efm/Scribl.1.1.4.min.js' %}"></script>
-	    <script src="{% static 'efm/dragscrollable.js' %}"></script>
-	  	<script src="{% static 'efm/jquery.tablesorter.min.js' %}"></script>
-        <script src="{% static 'efm/modifications.js' %}"></script>
+        <script src="{% static 'efm2/Scribl.1.1.4.min.js' %}"></script>
+	    <script src="{% static 'efm2/dragscrollable.js' %}"></script>
+	  	<script src="{% static 'efm2/jquery.tablesorter.min.js' %}"></script>
+        <script src="{% static 'efm2/modifications.js' %}"></script>
 
         <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-		<link href="{% static 'efm/styles.css' %}" rel="stylesheet" type="text/css" media="all" />
+		<link href="{% static 'efm2/styles.css' %}" rel="stylesheet" type="text/css" media="all" />
 
 		<script>
 
@@ -173,7 +173,7 @@
 			<h2>RIP score: {{ rate.rip|floatformat }}*</h2>
 			<p class="note">*(Lower is more stable.)</p>
             <div id="csv-button">
-				<div><a href="{% url 'efm:index' %}">&larr; New Sequence</a></div>
+				<div><a href="{% url 'efm2:index' %}">&larr; New Sequence</a></div>
 				<div><a href="#" class="export">Download TSV</a></div>
                 <div><a href="https://github.com/barricklab/efm-calculator/wiki" target="_blank">Help</a></div>
 			</div>

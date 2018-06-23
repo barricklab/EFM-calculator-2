@@ -9,7 +9,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from tempfile import NamedTemporaryFile
 import os
-from efm_helper import *
+from .efm2_helper import *
 
 # Create your views here.
 class SeqForm(forms.Form):
@@ -44,13 +44,13 @@ class SeqForm(forms.Form):
             raise forms.ValidationError('Please submit a sequence for analysis.')
         elif sequence_file:
             if sequence_file.size < 50000:
-                with NamedTemporaryFile(delete=False) as data_file:
+                with NamedTemporaryFile(delete=False, mode='w') as data_file:
                     for chunk in sequence_file.chunks():
                         data_file.write(chunk)
             else:
                 raise forms.ValidationError('File size is too large.')
         elif sequence:
-            with NamedTemporaryFile(delete=False) as data_file:
+            with NamedTemporaryFile(delete=False, mode='w') as data_file:
                 data_file.write(sequence.strip())
 
         del cleaned_data['sequence']
@@ -149,8 +149,8 @@ def get_sequence(request):
             os.remove(form.cleaned_data.get('fasta_file'))
             if os.path.isfile(form.cleaned_data.get('temp_file')):
                 os.remove(form.cleaned_data.get('temp_file'))
-            return render(request, 'efm/results.html', results)
+            return render(request, 'efm2/results.html', results)
     else:
         form = SeqForm()
 
-    return render(request, 'efm/form.html', {'form': form, 'version': EFM_VERSION})
+    return render(request, 'efm2/form.html', {'form': form, 'version': EFM_VERSION})

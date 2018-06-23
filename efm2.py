@@ -8,7 +8,7 @@
 import subprocess
 import csv
 import sys
-from efm_helper import *
+from .efm2_helper import *
 from Bio import SeqIO
 
 def process_file(filepath, organism):

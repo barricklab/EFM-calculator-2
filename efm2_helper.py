@@ -1,9 +1,9 @@
 ####################################################
-## EVOLUTIOINARY FAILURE MODE CALCULATOR
-## Version 1.0.1
+## EVOLUTIONARY FAILURE MODE CALCULATOR
+## Version 2.0.0
 ####################################################
 
-EFM_VERSION = "1.0.1"
+EFM_VERSION = "2.0.0"
 
 
 import os
@@ -42,7 +42,7 @@ def run_mummer(fasta_file, org):
         output = subprocess.check_output(['repeat-match', '-n', '6', '-f', fasta_file])
     except:
         raise
-        print "MUMmer command 'repeat-match' failed."
+        print("MUMmer command 'repeat-match' failed.")
     output_lines = output.splitlines()
     # Loop through mummer output and skip the first 2 lines which only contain header information
     for line in output_lines[2:]:
@@ -74,7 +74,7 @@ def run_mummer(fasta_file, org):
     # Initialize list of dictionaries and reformat for tabular output
     output_list = []
     seen = []
-    for repeat_length, location_list in long_repeats.iteritems():
+    for repeat_length, location_list in long_repeats.items():
         for locations in location_list:
             rate_per_repeat = float(0)
             if len(locations) > 2:
@@ -112,7 +112,7 @@ def run_mummer(fasta_file, org):
         output = subprocess.check_output(['show-coords', '-T', '-I 100', '-H', '-d', coords_file.name])
     except:
         raise
-        print "MUMmer command 'nucmer' and 'show-coords' failed."
+        print("MUMmer command 'nucmer' and 'show-coords' failed.")
     finally:
         # Remove the '.delta' file because we're finished with it
         os.remove(coords_file.name)
@@ -199,7 +199,7 @@ def get_repeats_in_window(n, sequence, min_count, org):
 
     # Reformat for tabular output
     output_list = []
-    for index, contents in repeats.iteritems():
+    for index, contents in repeats.items():
         mut_rate = get_mut_rate(contents[1], n, org)
         entry = {'location': [index],
                  'sequence': str(contents[0]),

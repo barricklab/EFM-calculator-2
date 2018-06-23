@@ -1,4 +1,4 @@
-__author__ = 'ben'
+__author__ = 'efm2'
 
 from django.conf import settings
 
