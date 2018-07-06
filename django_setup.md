@@ -64,8 +64,9 @@ urlpatterns = [
 ]
 ```
 
-Start Django server:
+Start Django server (from the main directory):
 ```console
+$ cd efm2site
 $ python manage.py runserver
 ```
 
