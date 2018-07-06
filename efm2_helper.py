@@ -24,6 +24,11 @@ from xml.etree import ElementTree
 import argparse
 from Bio import SeqIO, Seq
 
+# Import plotting functionality
+import numpy as np
+import plotly.graph_objs as go
+from plotly.offline import plot
+
 SUB_RATE = float(2.2 * 10 ** (-10))
 
 
@@ -392,6 +397,91 @@ def rate_sum(repeats, seq_len):
     return {'rip': rel_rate, 'ssr_sum': ssr_sum, 'rmd_sum': rmd_sum, 'bps_sum': base_rate}
 
 
+
+def results_plot(results):
+    """
+    Creates a plotly plot for embedding in a webpage.
+    :param results: dictionary with JSON style results of EFM Calculator
+    :return: html div containing plot
+    """
+    
+    # Create the plot
+    
+    x_list = []
+    y_list = []
+    shape_list = []
+    marker_symbol_list = []
+    marker_color_list = []
+    
+    for r in results['repeats']:
+      x_list += r['location']
+      y_list += [ math.log10( r['raw_rate'] ) ] * len(r['location'])
+      
+      if r['type'] == 'ssr':
+        item_color = 'blue'
+        item_marker_symbol = 'square'
+      elif r['type'] == 'rmd':
+        item_color = 'green'
+        item_marker_symbol = 'circle'
+      else:
+        item_color = 'gray'
+        item_marker_symbol = 'x'
+      
+      marker_color_list += [item_color] * len(r['location'])
+      marker_symbol_list += [item_marker_symbol] * len(r['location'])
+
+      
+      shape_item = {
+        'type': 'line',
+        'x0': r['location'][0],
+        'y0': math.log10( r['raw_rate'] ),
+        'x1': r['location'][-1],
+        'y1': math.log10( r['raw_rate'] ),
+        'line': {
+            'color': item_color,
+            'width': 1
+        },
+      }
+      shape_list += [shape_item]
+
+        
+    #print(x_list)
+    #print(y_list)
+    
+    trace1 = go.Scatter(
+      x=x_list,
+      y=y_list,
+      mode='markers',
+      marker = dict(
+        size = 6,
+        color = marker_color_list,
+        #line = dict(
+        #    width = 2,
+        #    color = 'rgb(0, 0, 0)'
+        #),
+        symbol = marker_symbol_list
+      )
+    )
+
+    data = [trace1]
+    layout = {
+      # autosize=False,
+      # width=900,
+      # height=500,
+      
+      'shapes' : list(shape_list),
+      
+      'xaxis' : {
+          'autorange' : True
+      },
+      'yaxis' : {
+          'autorange' : True
+      }
+    }
+    fig = go.Figure(data=data, layout=layout)
+    return plot(fig, output_type='div', include_plotlyjs=False)
+
+
 def process_efm(form):
     """
     Takes a django form object and finds potentially hypermutable sites in a submitted sequence.
@@ -453,15 +543,19 @@ def process_helper(input_file, features, my_seq, org, check_features, title):
     # Find the sum of all mutation rates for sequences.
     overall_rate = rate_sum(merged_repeats, len(my_seq))
 
-    return {'repeats': merged_repeats_trunc if merged_repeats_trunc else '',
-            'features': features,
-            'seq_length': len(my_seq),
-            'rate': overall_rate,
-            'title': title,
-            'check_features': check_features,
-            'organism': org,
-            'version': EFM_VERSION}
-    
+    result = {
+              'repeats': merged_repeats_trunc if merged_repeats_trunc else '',
+              'features': features,
+              'seq_length': len(my_seq),
+              'rate': overall_rate,
+              'title': title,
+              'check_features': check_features,
+              'organism': org,
+              'version': EFM_VERSION,
+              }
+              
+    result['plot'] = results_plot(result)
+    return result
 
 
 

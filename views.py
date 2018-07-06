@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django import forms
 from django.core.files.base import ContentFile
+from django.views.generic import TemplateView
 
 import re
 from Bio import SeqIO
