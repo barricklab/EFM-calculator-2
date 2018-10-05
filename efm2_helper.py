@@ -406,6 +406,7 @@ def results_plot(results):
     """
     
     # Create the plot
+    print(results)
     
     x_list = []
     y_list = []
@@ -472,10 +473,12 @@ def results_plot(results):
       'shapes' : list(shape_list),
       
       'xaxis' : {
-          'autorange' : True
+          'range' : [1, results['seq_length']],
+          #'autorange' : True
       },
       'yaxis' : {
-          'autorange' : True
+          'range' : [-10, -2],
+          'fixedrange': True
       }
     }
     fig = go.Figure(data=data, layout=layout)
